@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Music</title>
+
+    <script src="https://w.soundcloud.com/player/api.js"></script>
+</head>
+<body>
+    <h1>Playlist</h1>
+
+    <table>
+        <tbody>
+            <tr th:each="track : ${tracks}">
+                <td>Song</td>
+                <td>Artist</td>
+                <td th:text="${track.url}">URL</td>
+                <form th:action="@{client/removeTrack}" method="post"><button type="submit">Submit</button></form>
+            </tr>
+        </tbody>
+    </table>
+
+    <form>
+        <label>URL-input</label>
+        <input type="url" name="url" placeholder="Enter URL here">
+        <button type="submit">Submit</button>
+    </form>
+
+    <!--iframe 
+        class="soundcloudPlayer"
+        width="550" 
+        height="550" 
+        scrolling="no" 
+        frameborder="no" 
+        allow="autoplay" 
+        src="https://w.soundcloud.com/player/?url=https://soundcloud.com/stereocoyote-756/hush-akuma-nihmune&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=true&visual=true">
+    </iframe-->
+
+    <!--iframe 
+        width="100%" 
+        height="300" 
+        scrolling="no" 
+        frameborder="no" 
+        allow="autoplay" 
+        src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1286184700&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true">
+    </iframe>
+    <div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/user-865436111" title="Yuna Celeste" target="_blank" style="color: #cccccc; text-decoration: none;">Yuna Celeste</a> · <a href="https://soundcloud.com/user-865436111/cover-chronos-by-cepheid" title="(COVER) Chronos by Cepheid" target="_blank" style="color: #cccccc; text-decoration: none;">(COVER) Chronos by Cepheid</a></div-->
+    
+    
+    <button onclick="startPlaying()">Play</button>
+    <iframe 
+        id="soundcloudPlayer"
+        width="100%" 
+        height="300" 
+        scrolling="no" 
+        frameborder="no" 
+        allow="autoplay" 
+        src="https://w.soundcloud.com/player/?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F1848538&show_artwork=true">
+    </iframe>
+    <div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/user-865436111" title="Yuna Celeste" target="_blank" style="color: #cccccc; text-decoration: none;">Yuna Celeste</a> · <a href="https://soundcloud.com/user-865436111/cover-chronos-by-cepheid" title="(COVER) Chronos by Cepheid" target="_blank" style="color: #cccccc; text-decoration: none;">(COVER) Chronos by Cepheid</a></div>
+
+    <!--iframe 
+        class="youtubePlayer"
+        width="560" 
+        height="315"
+        frameborder="0"
+        allow="autoplay; encrypted-media"
+        src="https://www.youtube.com/embed/zsBBWBEZkFQ?autoplay=1&mute=1">
+    </iframe-->
+
+    <!--iframe 
+        width="300" 
+        height="380" 
+        frameborder="0" 
+        allowtransparency="true" 
+        allow="encrypted-media"
+        src="https://open.spotify.com/embed/track/4uLU6hMCjMI75M1A2tKUQC">
+    </iframe-->
+    <!-- https://music.youtube.com/watch?v=zsBBWBEZkFQ&si=t4bSbEBG8Uj-gNLW -->
+     
+    <script th:inline="javascript">
+        const tracks = /*[[${tracks}]]*/ [];
+        console.log(tracks);
+
+        const widget = SC.Widget(document.getElementById('soundcloudPlayer'));
+
+        //TODO listener hinzufügen, wenn ein Track fertig ist, dann den nächsten abspielen
+        async function startPlaying() {
+            if(!tracks || tracks.length === 0) {
+                console.error('No tracks available to play.');
+                return;
+            }
+
+            widget.load('https://soundcloud.com/newbomb/nujabes-lady-brown-feat-cise?si=6d97f2403dff4f128d244f18f356ac7e&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing', {show_artwork: true, auto_play: true});
+        }
+    </script>
+</body>
+</html>
