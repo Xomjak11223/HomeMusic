@@ -37,7 +37,7 @@ This software provides the following features to solve these problems:
 
 ## How to run this app
 - Configure your IP-Address (see below)
-- Run the Software using '.\mvnw spring-boot:run'
+- Run the Software using `.\mvnw spring-boot:run`
 - After a few seconds, a website will be available for all users in your network
 - Website-URL: http://YOUR_IP_ADDRESS:8080
 - Example-URL: http://192.168.40.60:8080
@@ -49,7 +49,7 @@ Write your IP-Address in this section.
 
 ### If you don't know what your IP-Address is:
 - Open a new Terminal
-- Write the prompt 'ipconfig' in it
+- Write the prompt `ipconfig` in it
 - search for the IPv4-Address in the 'Ethernet-Adapter Ethernet' section, that is your IP-Address
 
 ## How to use this Software
