@@ -50,6 +50,8 @@ This software provides the following features to solve these problems:
 - Spotify
 
 ## How to run this app
+- clone the repository using `git clone https://github.com/Xomjak11223/HomeMusic.git`
+- navigate to the project folder `cd HomeMusic`
 - Configure your IP-Address (see below)
 - Run the Software using `.\mvnw spring-boot:run`
 - After a few seconds, a website will be available for all users in your network
