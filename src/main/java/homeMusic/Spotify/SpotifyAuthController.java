@@ -16,6 +16,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.random.RandomGenerator;
 
+// NEEDS HTTPS
 @Controller
 public class SpotifyAuthController {
 
