@@ -35,8 +35,9 @@ public class SpotifyAuthController {
 
 
     @GetMapping("/spotify/login")
-    public String login() {
+    public String login(HttpSession session) {
         String state = UUID.randomUUID().toString();
+        session.setAttribute("spotify_state", state);
         String url = UriComponentsBuilder
                 .fromUriString("https://accounts.spotify.com/authorize")
                 .queryParam("response_type", "code")
@@ -49,6 +50,7 @@ public class SpotifyAuthController {
                 .toUriString();
 
         System.out.println(redirectUri);
+        System.out.println("state0: " + state);
         return "redirect:" + url;
     }
     @GetMapping("/spotify/callback")
@@ -56,8 +58,11 @@ public class SpotifyAuthController {
             @RequestParam("code") String code,
             @RequestParam("state") String state,
             HttpSession session
-    ) {
-        String savedState = (String) session.getAttribute("state");
+    )
+    {
+        System.out.println("state1: " + state);
+
+        String savedState = (String) session.getAttribute("spotify_state");
         if (savedState == null || !savedState.equals(state)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid state parameter");
         }
