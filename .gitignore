@@ -38,3 +38,4 @@ src/main/resources/application.properties
 *.bat
 # Zertifikate für HTTPS
 *.p12
+*.env
