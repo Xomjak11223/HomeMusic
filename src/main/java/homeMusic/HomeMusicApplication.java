@@ -22,8 +22,8 @@ public class HomeMusicApplication {
 	public static void main(String[] args) {
 		SpringApplication app = new SpringApplication(HomeMusicApplication.class);
 		app.addInitializers(new DotenvLoader());
-		app.run(args);
 
+		// Test
 		tracks = new ArrayList<>();
 		SoundcloudTrack s = new SoundcloudTrack("https://www.soundcloud.com");
 		tracks.add(s);
@@ -31,7 +31,7 @@ public class HomeMusicApplication {
 		Dotenv dotenv = Dotenv.load();
 		dotenv.get("");
 
-		SpringApplication.run(HomeMusicApplication.class, args);
+		app.run(args);
 	}
 
 }

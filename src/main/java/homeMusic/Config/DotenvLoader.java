@@ -10,10 +10,23 @@ public class DotenvLoader implements ApplicationContextInitializer<ConfigurableA
     public void initialize(ConfigurableApplicationContext applicationContext) {
         Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
 
+
+        // set in .properties
+        String ip = dotenv.get("YOUR_IP", "");
+        String clientId = dotenv.get("SPOTIFY_CLIENT_ID", "");
+        String clientSecret = dotenv.get("SPOTIFY_CLIENT_SECRET", "");
+        String redirectUri = dotenv.get("SPOTIFY_REDIRECT_URI", "");
+
         // Werte in System Properties setzen
-        System.setProperty("YOUR_IP", dotenv.get("YOUR_IP", ""));
-        System.setProperty("SPOTIFY_CLIENT_ID", dotenv.get("SPOTIFY_CLIENT_ID", ""));
-        System.setProperty("SPOTIFY_CLIENT_SECRET", dotenv.get("SPOTIFY_CLIENT_SECRET", ""));
-        System.setProperty("SPOTIFY_REDIRECT_URI", dotenv.get("SPOTIFY_REDIRECT_URI", ""));
+        System.setProperty("YOUR_IP", ip);
+        System.setProperty("SPOTIFY_CLIENT_ID", clientId);
+        System.setProperty("SPOTIFY_CLIENT_SECRET", clientSecret);
+        System.setProperty("SPOTIFY_REDIRECT_URI", redirectUri);
+
+        // Ausgabe zur Kontrolle
+        System.out.println("[.env] YOUR_IP=" + ip);
+        System.out.println("[.env] SPOTIFY_CLIENT_ID=" + clientId);
+        System.out.println("[.env] SPOTIFY_CLIENT_SECRET=" + (clientSecret.isEmpty() ? "(leer)" : "********"));
+        System.out.println("[.env] SPOTIFY_REDIRECT_URI=" + redirectUri);
     }
 }
