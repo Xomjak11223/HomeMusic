@@ -5,31 +5,112 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-<h1>Spotify Controller</h1>
+    <h1>Spotify Controller</h1>
+        <!-- Login Button -->
+        <button onclick="openLogin()">Login with Spotify</button>
 
-<!-- Login Button -->
-<button onclick="openLogin()">Login with Spotify</button>
+    <hr>
+        <!-- Playback Buttons -->
+        <button onclick="webPlay()">Play on Web</button>
+        <button onclick="webPause()">Pause on Web</button>
+        <br><br>
 
-<hr>
+        <button onclick="getCurrent()">Current Track</button>
+        <button onclick="play()">Play</button>
+        <button onclick="pause()">Pause</button>
 
-<!-- Playback Buttons -->
-<button onclick="getCurrent()">Current Track</button>
-<button onclick="play()">Play</button>
-<button onclick="pause()">Pause</button>
 
-<!-- Output Area -->
-<pre id="output"></pre>
+
+        <!-- Output Area -->
+        <pre id="output"></pre>
+
+<script src="https://sdk.scdn.co/spotify-player.js"></script>
 
 <script>
+    let spotifyPlayer = null;
+    let deviceId = null;
+
+    // Web Player
+    window.onSpotifyWebPlaybackSDKReady = async () => {
+        const token = await getAccessToken();
+        if (!token) return;
+
+        spotifyPlayer = new Spotify.Player({
+            name: 'HomeMusic Web Player',
+            getOAuthToken: cb => cb(token),
+            volume: 0.5
+        });
+
+        spotifyPlayer.addListener('ready', ({ device_id }) => {
+            deviceId = device_id;
+            document.getElementById('output').innerText = `Spotify Web Player ready: ${device_id}`;
+        });
+
+        spotifyPlayer.addListener('initialization_error', ({ message }) => {
+            console.error('Init error:', message);
+            document.getElementById('output').innerText = `Init error: ${message}`;
+        });
+        spotifyPlayer.addListener('authentication_error', ({ message }) => {
+            console.error('Auth error:', message);
+            document.getElementById('output').innerText = `Auth error: ${message}`;
+        });
+        spotifyPlayer.addListener('account_error', ({ message }) => {
+            console.error('Account error:', message);
+            document.getElementById('output').innerText = `Account error: ${message}`;
+        });
+        spotifyPlayer.addListener('playback_error', ({ message }) => {
+            console.error('Playback error:', message);
+            document.getElementById('output').innerText = `Playback error: ${message}`;
+        });
+
+        // Überwache Statusupdates (Trackwechsel etc.)
+        spotifyPlayer.addListener('player_state_changed', state => {
+            console.log('State changed:', state);
+            if (!state) return;
+            const track = state.track_window.current_track;
+            const paused = state.paused;
+            document.getElementById('output').innerText =
+                `Track: ${track.name} — ${track.artists.map(a => a.name).join(", ")}\n` +
+                `Paused: ${paused}`;
+        });
+
+        spotifyPlayer.connect();
+    };
+
+    // Web-Playback-Funktionen
+    async function webPlay() {
+        if (!deviceId) {
+            document.getElementById('output').innerText = 'Device not ready';
+            return;
+        }
+        const token = await getAccessToken();
+        if (!token) return;
+        await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                uris: ["spotify:track:4uLU6hMCjMI75M1A2tKUQC"]  // Beispieltrack
+            })
+        });
+    }
+
+    async function webPause() {
+        if (!spotifyPlayer) return;
+        await spotifyPlayer.pause();
+    }
+
     function openLogin() {
         // opens a small popup window for the login
         window.open(
             '/spotify/login',          // URL
-            'SpotifyLogin',           // Fenstername
-            'width=500,height=700'    // Fenstergröße
+            'SpotifyLogin',           // Windowsname
+            'width=500,height=700'    // Window ssize
         );
     }
-
+    // Backend Calls
     async function getCurrent() {
         try {
             const res = await fetch('/spotify/api/current');
@@ -57,6 +138,20 @@
             document.getElementById('output').innerText = text;
         } catch (e) {
             document.getElementById('output').innerText = 'Error pausing: ' + e;
+        }
+    }
+
+    async function getAccessToken() {
+        try {
+            const res = await fetch('/spotify/token');
+            if (!res.ok) {
+                throw new Error(`Status ${res.status}`);
+            }
+            const obj = await res.json();
+            return obj.access_token;
+        } catch (e) {
+            document.getElementById('output').innerText = `Error getting token: ${e}`;
+            return null;
         }
     }
 

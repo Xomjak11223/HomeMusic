@@ -126,7 +126,7 @@ public class SpotifyAuthController {
     public ResponseEntity<String> refreshAccessToken(HttpSession session) {
         String refreshToken = (String) session.getAttribute("spotify_refresh_token");
         if (refreshToken == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Kein Refresh Token vorhanden.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No Refresh Token available.");
         }
 
         HttpHeaders headers = new HttpHeaders();
@@ -152,6 +152,18 @@ public class SpotifyAuthController {
         System.out.println("Access Token erneuert.");
         return ResponseEntity.ok("Neues Access Token: " + newAccessToken);
     }
+
+    // For the JavaScript Player
+    @GetMapping("/spotify/token")
+    public ResponseEntity<Map<String, String>> getAccessToken(HttpSession session) {
+        String token = (String) session.getAttribute("spotify_access_token");
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "No access token available"));
+        }
+        return ResponseEntity.ok(Map.of("access_token", token));
+    }
+
 
 }
 
