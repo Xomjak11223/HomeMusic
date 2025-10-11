@@ -1,24 +1,19 @@
-package homeMusic.config;
+package homeMusic.Config;
 
 import io.github.cdimascio.dotenv.Dotenv;
-import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
-import org.springframework.context.ApplicationListener;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.stereotype.Component;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
 
-@Component
-public class DotenvLoader implements ApplicationListener<ApplicationEnvironmentPreparedEvent> {
+public class DotenvLoader implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
     @Override
-    public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
-        Dotenv dotenv = Dotenv.configure()
-                .ignoreIfMissing()
-                .load();
+    public void initialize(ConfigurableApplicationContext applicationContext) {
+        Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
 
-        ConfigurableEnvironment env = event.getEnvironment();
-        dotenv.entries().forEach(entry -> {
-            // Setzt die Werte als System Properties → Spring kann sie wie gewohnt mit @Value lesen
-            System.setProperty(entry.getKey(), entry.getValue());
-        });
+        // Werte in System Properties setzen
+        System.setProperty("YOUR_IP", dotenv.get("YOUR_IP", ""));
+        System.setProperty("SPOTIFY_CLIENT_ID", dotenv.get("SPOTIFY_CLIENT_ID", ""));
+        System.setProperty("SPOTIFY_CLIENT_SECRET", dotenv.get("SPOTIFY_CLIENT_SECRET", ""));
+        System.setProperty("SPOTIFY_REDIRECT_URI", dotenv.get("SPOTIFY_REDIRECT_URI", ""));
     }
 }

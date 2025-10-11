@@ -39,25 +39,25 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
-		<!-- loading environmental Variables-->
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
     		<groupId>org.springframework.boot</groupId>
     		<artifactId>spring-boot-devtools</artifactId>
     		<scope>runtime</scope>
 		</dependency>
 
+		<!-- loading environmental Variables-->
 		<dependency>
 			<groupId>io.github.cdimascio</groupId>
-			<artifactId>java-dotenv</artifactId>
-			<version>5.2.2</version>
+			<artifactId>dotenv-java</artifactId>
+			<version>3.2.0</version>
 		</dependency>
-
 
 	</dependencies>
 
