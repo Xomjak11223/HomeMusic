@@ -32,4 +32,11 @@ public class HomeMusicControler {
         model.addAttribute("tracks", HomeMusicApplication.tracks);
         return "client.html";
     }
+
+    @GetMapping("/spotify")
+    public String spotify(Model model){
+        System.out.println("Spotify-API selected");
+        return "spotify.html";
+    }
+
 }
