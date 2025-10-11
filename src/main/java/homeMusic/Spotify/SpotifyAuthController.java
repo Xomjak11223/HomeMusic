@@ -34,7 +34,7 @@ public class SpotifyAuthController {
     private String scope;
 
 
-    @GetMapping("/login")
+    @GetMapping("/spotify/login")
     public String login() {
         String state = UUID.randomUUID().toString();
         String url = UriComponentsBuilder
@@ -48,10 +48,10 @@ public class SpotifyAuthController {
                 .encode()
                 .toUriString();
 
-
+        System.out.println(redirectUri);
         return "redirect:" + url;
     }
-    @GetMapping("/callback")
+    @GetMapping("/spotify/callback")
     public ResponseEntity<String> callback(
             @RequestParam("code") String code,
             @RequestParam("state") String state,
