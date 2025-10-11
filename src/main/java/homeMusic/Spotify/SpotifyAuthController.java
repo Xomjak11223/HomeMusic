@@ -10,11 +10,10 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Base64;
+import java.util.Map;
 import java.util.UUID;
 
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.random.RandomGenerator;
 
 // NEEDS HTTPS
 @Controller
@@ -32,6 +31,9 @@ public class SpotifyAuthController {
 
     @Value("${spotify.scope}")
     private String scope;
+
+    @Value("${spotify.token.url}")
+    String tokenUrl;
 
 
     @GetMapping("/spotify/login")
@@ -63,6 +65,7 @@ public class SpotifyAuthController {
         System.out.println("state1: " + state);
 
         String savedState = (String) session.getAttribute("spotify_state");
+        session.removeAttribute("spotify_state");
         if (savedState == null || !savedState.equals(state)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid state parameter");
         }
@@ -83,18 +86,63 @@ public class SpotifyAuthController {
         HttpEntity<String> request = new HttpEntity<>(body, headers);
 
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange(
+        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
                 tokenUrl,
                 HttpMethod.POST,
                 request,
-                String.class
+                new org.springframework.core.ParameterizedTypeReference<Map<String, Object>>() {}
         );
 
-        // Hier bekommst du access_token & refresh_token
-        // Später: Token speichern und Benutzer weiterleiten
-        return ResponseEntity.ok(response.getBody());
-    }
 
+        Map<String, Object> responseBody = response.getBody();
+        if (responseBody == null) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("No response from Spotify");
+        }
+
+        // Save token for Spotify API Access
+        String accessToken = (String) response.getBody().get("access_token");
+        String refreshToken = (String) response.getBody().get("refresh_token");
+        session.setAttribute("spotify_access_token", accessToken);
+        session.setAttribute("spotify_refresh_token", refreshToken);
+
+        System.out.println("Access-Token: "+ accessToken);
+        System.out.println("Refresh-Token: "+ refreshToken);
+        System.out.println("Scope: "+ response.getBody().get("scope")); // scope defines what you can do with the access token
+        System.out.println("Access Token received");
+
+        return ResponseEntity.ok("Saved Access Token.");
+    }
+    @GetMapping("/spotify/refresh")
+
+    public ResponseEntity<String> refreshAccessToken(HttpSession session) {
+        String refreshToken = (String) session.getAttribute("spotify_refresh_token");
+        if (refreshToken == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Kein Refresh Token vorhanden.");
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        String authString = clientId + ":" + clientSecret;
+        headers.set("Authorization", "Basic " + Base64.getEncoder().encodeToString(authString.getBytes(StandardCharsets.UTF_8)));
+
+        String body = "grant_type=refresh_token&refresh_token=" + refreshToken;
+        HttpEntity<String> request = new HttpEntity<>(body, headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Map> response = restTemplate.exchange(
+                tokenUrl,
+                HttpMethod.POST,
+                request,
+                Map.class
+        );
+
+        String newAccessToken = (String) response.getBody().get("access_token");
+        session.setAttribute("spotify_access_token", newAccessToken);
+
+        System.out.println("Access Token erneuert.");
+        return ResponseEntity.ok("Neues Access Token: " + newAccessToken);
+    }
 
 }
 
