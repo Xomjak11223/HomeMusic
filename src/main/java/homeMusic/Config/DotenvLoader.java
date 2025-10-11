@@ -10,12 +10,12 @@ public class DotenvLoader implements ApplicationContextInitializer<ConfigurableA
     public void initialize(ConfigurableApplicationContext applicationContext) {
         Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
 
-        // set in .properties
+        // get .env indexes
         String ip = dotenv.get("YOUR_IP", "");
         String clientId = dotenv.get("SPOTIFY_CLIENT_ID", "");
         String clientSecret = dotenv.get("SPOTIFY_CLIENT_SECRET", "");
 
-        // Werte in System Properties setzen
+        // set in .properties
         System.setProperty("YOUR_IP", ip);
         System.setProperty("SPOTIFY_CLIENT_ID", clientId);
         System.setProperty("SPOTIFY_CLIENT_SECRET", clientSecret);
