@@ -15,7 +15,13 @@ import java.util.UUID;
 
 import java.nio.charset.StandardCharsets;
 
-// NEEDS HTTPS
+/*  NEEDS HTTPS, Spotify Premium Account, Own Project on the Developer Dashboard
+    with the following details in the application.properties:
+    - redirect URL
+    - spotify client.id
+    - spotify client.secret in
+*/
+
 @Controller
 public class SpotifyAuthController {
 
@@ -90,7 +96,7 @@ public class SpotifyAuthController {
                 tokenUrl,
                 HttpMethod.POST,
                 request,
-                new org.springframework.core.ParameterizedTypeReference<Map<String, Object>>() {}
+                new org.springframework.core.ParameterizedTypeReference<>() {}
         );
 
 
