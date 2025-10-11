@@ -64,7 +64,7 @@ keytool -genkeypair ^
 
 echo.
 echo ==============================================
-echo Certificate created:
+echo Certificate created (wait ~5s) :
 echo    %TARGET_PATH%
 echo.
 echo Start your Spring Boot project with:
