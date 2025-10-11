@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<h1>Spotify Controller</h1>
+
+<!-- Login Button -->
+<button onclick="openLogin()">Login with Spotify</button>
+
+<hr>
+
+<!-- Playback Buttons -->
+<button onclick="getCurrent()">Current Track</button>
+<button onclick="play()">Play</button>
+<button onclick="pause()">Pause</button>
+
+<!-- Output Area -->
+<pre id="output"></pre>
+
+<script>
+    function openLogin() {
+        // opens a small popup window for the login
+        window.open(
+            '/spotify/login',          // URL
+            'SpotifyLogin',           // Fenstername
+            'width=500,height=700'    // Fenstergröße
+        );
+    }
+
+    async function getCurrent() {
+        try {
+            const res = await fetch('/spotify/api/current');
+            const text = await res.text();
+            document.getElementById('output').innerText = text;
+        } catch (e) {
+            document.getElementById('output').innerText = 'Error getting current track: ' + e;
+        }
+    }
+
+    async function play() {
+        try {
+            const res = await fetch('/spotify/api/play', { method: 'PUT' });
+            const text = await res.text();
+            document.getElementById('output').innerText = text;
+        } catch (e) {
+            document.getElementById('output').innerText = 'Error playing: ' + e;
+        }
+    }
+
+    async function pause() {
+        try {
+            const res = await fetch('/spotify/api/pause', { method: 'PUT' });
+            const text = await res.text();
+            document.getElementById('output').innerText = text;
+        } catch (e) {
+            document.getElementById('output').innerText = 'Error pausing: ' + e;
+        }
+    }
+
+
+
+</script>
+</body>
+</html>

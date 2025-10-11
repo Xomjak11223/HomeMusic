@@ -115,6 +115,7 @@ public class SpotifyAuthController {
         System.out.println("Scope: "+ response.getBody().get("scope")); // scope defines what you can do with the access token
         System.out.println("Access Token received");
 
+        System.out.println("Access Token received");
         return ResponseEntity.ok("Saved Access Token.");
     }
     @GetMapping("/spotify/refresh")
