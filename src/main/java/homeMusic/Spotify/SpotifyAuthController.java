@@ -76,7 +76,6 @@ public class SpotifyAuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid state parameter");
         }
 
-        String tokenUrl = "https://accounts.spotify.com/api/token";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
