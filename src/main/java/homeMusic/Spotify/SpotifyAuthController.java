@@ -41,13 +41,16 @@ public class SpotifyAuthController {
     @Value("${spotify.token.url}")
     String tokenUrl;
 
+    @Value("${spotify.auth.url}")
+    String authUrl;
+
 
     @GetMapping("/spotify/login")
     public String login(HttpSession session) {
         String state = UUID.randomUUID().toString();
         session.setAttribute("spotify_state", state);
         String url = UriComponentsBuilder
-                .fromUriString("https://accounts.spotify.com/authorize")
+                .fromUriString(authUrl)
                 .queryParam("response_type", "code")
                 .queryParam("client_id", clientId)
                 .queryParam("scope", scope)

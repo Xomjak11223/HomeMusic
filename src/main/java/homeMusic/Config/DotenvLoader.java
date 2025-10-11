@@ -23,7 +23,7 @@ public class DotenvLoader implements ApplicationContextInitializer<ConfigurableA
         System.setProperty("SPOTIFY_CLIENT_SECRET", clientSecret);
         System.setProperty("SPOTIFY_REDIRECT_URI", redirectUri);
 
-        // Ausgabe zur Kontrolle
+        // Debug
         System.out.println("[.env] YOUR_IP=" + ip);
         System.out.println("[.env] SPOTIFY_CLIENT_ID=" + clientId);
         System.out.println("[.env] SPOTIFY_CLIENT_SECRET=" + (clientSecret.isEmpty() ? "(leer)" : "********"));
